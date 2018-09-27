@@ -3,3 +3,6 @@ language: go
 go:
   - "1.x"
   - master
+before_install:
+  - mv . ${TRAVIS_HOME}/gopath/src/app/api
+  - cd ${TRAVIS_HOME}/gopath/src/app/
