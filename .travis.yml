@@ -1,0 +1,8 @@
+language: go
+
+go:
+  - "1.x"
+  - master
+before_install:
+  - cp api/app ${TRAVIS_HOME}/gopath/src/
+  - cd ${TRAVIS_HOME}/gopath/src/app
