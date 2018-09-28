@@ -11,6 +11,7 @@ import (
 // single owner.
 type Story struct {
     gorm.Model
+    Complexity int `json:"complexity"`
     Name string `gorm:"type:varchar(100);not null;" json:"name"`
     Type string `gorm:"type:varchar(20);not null;" json:"type"`
     Kind string `gorm:"type:varchar(20);not null;" json:"kind"`

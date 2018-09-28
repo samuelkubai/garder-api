@@ -49,6 +49,7 @@ type PTStoryValues struct {
     Description string
     Story_type string
     Current_state string
+    Estimate int
     Owner_ids []int
     Label_ids []int
     Created_at int
@@ -95,6 +96,20 @@ func (pt *PivotalTracker) Save(activity PTActivity) *models.Story {
     pt.DB.Save(story)
     
     return story
+}
+
+func (pt *PivotalTracker) UpdateComplexity(activity PTActivity) *models.Story {
+  story := &models.Story{}
+
+  pt.DB.Where("id = ?", uint(activity.Primary_resources[0].Id)).First(story)
+  if story.ID == 0 {
+    story = pt.Save(activity)
+  }
+
+  story.Complexity = activity.Changes[0].New_values.Estimate
+  pt.DB.Save(&story)
+
+  return story
 }
 
 func (pt *PivotalTracker) create(activity PTActivity) *models.Story {
@@ -174,6 +189,8 @@ func (pt *PivotalTracker) HandleActivity(w http.ResponseWriter, r *http.Request)
         respond.AsJson(w, pt.create(response))
     case "edited":
         respond.AsJson(w, pt.update(response))
+    case "estimated":
+        respond.AsJson(w, pt.UpdateComplexity(response))
     case "started":
         respond.AsJson(w, pt.markAs(kind, response))
     case "finished":
