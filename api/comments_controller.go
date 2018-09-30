@@ -23,6 +23,9 @@ func (ctrl CommentsController) GetComments(w http.ResponseWriter, r *http.Reques
    if commentID, ok := params["id"]; ok {
       ctrl.DB.Preload("PullRequest").Preload("Story").Preload("Activity").Where("id = ?", commentID).First(&comment)
       respond.AsJson(w, comment)
+   } else if storyID, ok := params["storyID"]; ok {
+      ctrl.DB.Preload("PullRequest").Preload("Story").Preload("Activity").Where("story_id = ?", storyID).Find(&comments)
+      respond.AsJson(w, comments)
    } else {
       ctrl.DB.Preload("PullRequest").Preload("Story").Preload("Activity").Find(&comments)
       respond.AsJson(w, comments)
