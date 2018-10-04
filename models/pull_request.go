@@ -15,7 +15,8 @@ type PullRequest struct {
     StoryID int `json:"storyId"`
     User User `json:"user"`
     Story Story `json:"story"`
-    Labels []*Label `gorm:"many2many:pull_request_labels" json:"label"`
+    PullRequestLabels []*PullRequestLabel `json:"labels,omitempty"`
     Comments []Comment `json:"comments,omitempty"`
     Activity []Activity `gorm:"polymorphic:Actor;"`
+    Activities []Activity `json:"activities"`
 }

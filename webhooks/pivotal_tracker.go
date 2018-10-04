@@ -139,7 +139,7 @@ func (pt *PivotalTracker) comment(activity PTActivity) *models.Comment {
     }
     
     pt.DB.Save(comment)
-    LogCommentActivity(comment, "comment-story", activity.Primary_resources[0].Id, pt.DB) 
+    LogCommentActivity(comment, "comment-story", pt.DB) 
 
     return comment
 }

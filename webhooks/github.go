@@ -80,19 +80,21 @@ func (gh *Github) Comment(activity GHActivity) *models.Comment {
     
     gh.DB.Save(comment)
 
-    LogCommentActivity(comment, "comment-pull-request", storyID, gh.DB)
+    LogCommentActivity(comment, "comment-pull-request", gh.DB)
     return comment
 }
 
 func (gh *Github) Save(activity GHActivity) *models.PullRequest {
     // Prepare the pull request labels
-    var labels []*models.Label
+    var labels []*models.PullRequestLabel
 
     for _, label := range activity.Pull_request.Labels {
-        labels = append(labels, &models.Label{
+        labels = append(labels, &models.PullRequestLabel{
+          Label: &models.Label{
             Model: gorm.Model{ID: uint(label.Id)},
             Name: label.Name,
             Color: label.Color,
+          },
         })
     }
 
@@ -109,12 +111,16 @@ func (gh *Github) Save(activity GHActivity) *models.PullRequest {
         Merged: activity.Pull_request.Merged,
         Mergeable: activity.Pull_request.Mergeable,
         StoryID: storyID,
-        Labels: labels,
+        PullRequestLabels: labels,
     }
     
     gh.DB.Save(pull_request)
-
-    LogPullRequestActivity(pull_request, activity.Action + "-pull-request", storyID, gh.DB)
+    
+    if len(labels) < 1 {
+      LogPullRequestActivity(pull_request, activity.Action + "-pull-request", gh.DB)
+    } else {
+      LogLabelsActivity(pull_request, "labels-change", gh.DB)
+    }
     return pull_request
 }
 

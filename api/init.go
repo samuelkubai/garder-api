@@ -11,12 +11,14 @@ func RegisterApiRoutes(mux *http.ServeMux, db *gorm.DB) {
     storiesCtrl := StoriesController{ DB: db }
     commentsCtrl := CommentsController{ DB: db }
     pullRequestsCtrl := PullRequestsController{ DB: db }
+    labelsCtrl := LabelsController{ DB: db }
     activitiesCtrl := ActivitiesController{ DB: db }
 
     // Register the routes
     mux.HandleFunc("/comments", commentsCtrl.GetComments)
     mux.HandleFunc("/stories", storiesCtrl.GetStories)
     mux.HandleFunc("/pull_requests", pullRequestsCtrl.GetPullRequests)
+    mux.HandleFunc("/pr_label", labelsCtrl.GetLabels)
     mux.HandleFunc("/activity", activitiesCtrl.GetActivities)
 }
 

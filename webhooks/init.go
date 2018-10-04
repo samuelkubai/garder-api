@@ -19,10 +19,16 @@ func LogStoryActivity(story *models.Story, activity_type string, db *gorm.DB) {
   db.Model(story).Association("Activity").Append(&models.Activity{Type: activity_type, StoryID: int(story.ID)})
 }
 
-func LogCommentActivity(comment *models.Comment, activity_type string, storyID int, db *gorm.DB) {
-  db.Model(comment).Association("Activity").Append(&models.Activity{Type: activity_type, StoryID: storyID})
+func LogCommentActivity(comment *models.Comment, activity_type string, db *gorm.DB) {
+  db.Model(comment).Association("Activity").Append(&models.Activity{Type: activity_type, StoryID: comment.StoryID, PullRequestID: comment.PullRequestID})
 }
 
-func LogPullRequestActivity(pullRequest *models.PullRequest, activity_type string, storyID int, db *gorm.DB) {
-  db.Model(pullRequest).Association("Activity").Append(&models.Activity{Type: activity_type, StoryID: storyID})
+func LogPullRequestActivity(pullRequest *models.PullRequest, activity_type string, db *gorm.DB) {
+  db.Model(pullRequest).Association("Activity").Append(&models.Activity{Type: activity_type, StoryID: pullRequest.StoryID, PullRequestID: int(pullRequest.ID)})
+}
+
+func LogLabelsActivity(pullRequest *models.PullRequest, activity_type string, db *gorm.DB) {
+  for _, label := range pullRequest.PullRequestLabels {
+    db.Model(label).Association("Activity").Append(&models.Activity{Type: activity_type, StoryID: pullRequest.StoryID, PullRequestID: int(pullRequest.ID)})
+  }
 }

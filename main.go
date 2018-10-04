@@ -33,7 +33,7 @@ func initializeDatabase() (db *gorm.DB, err error) {
     if err == nil {
         db.LogMode(true)
         // Commit the migrations
-        db.AutoMigrate(&models.Project{}, &models.Story{}, &models.Status{}, &models.User{}, &models.Comment{}, &models.PullRequest{}, &models.Label{}, &models.Activity{})
+        db.AutoMigrate(&models.Project{}, &models.Story{}, &models.Status{}, &models.User{}, &models.Comment{}, &models.PullRequest{}, &models.Label{}, &models.Activity{}, &models.PullRequestLabel{})
     }
 
     return

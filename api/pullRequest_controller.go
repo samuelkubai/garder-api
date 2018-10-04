@@ -20,11 +20,20 @@ func (ctrl PullRequestsController) GetPullRequests(w http.ResponseWriter, r *htt
    var pullRequest models.PullRequest
 
    params := r.URL.Query()
-   if pullRequestID, ok := params["id"]; ok {
-      ctrl.DB.Preload("Activity").Where("id = ?", pullRequestID).First(&pullRequest)
+   if storyID, ok := params["storyID"]; ok {
+      ctrl.DB.Preload("Activities", func(db *gorm.DB) *gorm.DB {
+        return db.Order("activities.updated_at DESC")
+      }).Where("story_id = ?", storyID).Find(&pullRequests)
+      respond.AsJson(w, pullRequests)
+   } else if pullRequestID, ok := params["id"]; ok {
+      ctrl.DB.Preload("Activities", func(db *gorm.DB) *gorm.DB {
+        return db.Order("activities.updated_at DESC")
+      }).Where("id = ?", pullRequestID).First(&pullRequest)
       respond.AsJson(w, pullRequest)
    } else {
-      ctrl.DB.Preload("Activity").Find(&pullRequests)
+      ctrl.DB.Preload("Activities", func(db *gorm.DB) *gorm.DB {
+        return db.Order("activities.updated_at DESC")
+      }).Find(&pullRequests)
       respond.AsJson(w, pullRequests)
    }
 }

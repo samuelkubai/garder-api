@@ -9,5 +9,5 @@ type Label struct {
     gorm.Model
     Name string `json:"name"`
     Color string `json:"color"`
-    PullRequests []*PullRequest `gorm:"many2many:pull_request_labels" json:"pullRequests,omitempty"`
+    PullRequestsLabels []*PullRequestLabel `json:"pullRequests,omitempty"`
 }
